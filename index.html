@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Submission Received</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .countdown {
+            font-size: 24px;
+            color: #666;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Thank you for your submission!</h2>
+        <div class="countdown">
+            Redirecting in <span id="timer">5</span> seconds...
+        </div>
+    </div>
+
+    <script>
+        // Replace this URL with your Google Form URL
+        const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfjg7y5kvFYuFaW6pZCKlihKnv9u75FnuhfC-UR7AJYmu7fDA/viewform";
+        
+        let timeLeft = 5;
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                window.location.href = formUrl;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
