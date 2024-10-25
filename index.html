@@ -52,41 +52,50 @@
         <div class="form-container">
             <!-- Replace YOUR_FORM_URL with your Google Form embed URL -->
         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfjg7y5kvFYuFaW6pZCKlihKnv9u75FnuhfC-UR7AJYmu7fDA/viewform?embedded=true" width="640" height="2515" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+
         </div>
     </div>
 
     <script>
-        // Get the embedded form URL from the iframe
-        const formUrl = document.getElementById('formFrame').src;
+        const formFrame = document.getElementById('formFrame');
+        const formUrl = formFrame.src;
         const thankYouMessage = document.getElementById('thankYouMessage');
         
-        // Function to check if the form was submitted
+        // Function to check if the form was submitted based on URL change
         function checkFormSubmission() {
-            // Check if the current URL contains the form's submission confirmation
-            if (document.getElementById('formFrame').contentWindow.location.href.includes('formResponse')) {
-                // Show thank you message
-                thankYouMessage.style.display = 'block';
+            try {
+                const iframeLocation = formFrame.contentWindow.location.href;
                 
-                // Start countdown
-                let timeLeft = 5;
-                const timerElement = document.getElementById('timer');
-                
-                const countdown = setInterval(() => {
-                    timeLeft--;
-                    timerElement.textContent = timeLeft;
+                // Check if the URL contains 'formResponse', indicating form submission
+                if (iframeLocation.includes('formResponse')) {
+                    // Show the thank you message
+                    thankYouMessage.style.display = 'block';
+
+                    // Start countdown
+                    let timeLeft = 5;
+                    const timerElement = document.getElementById('timer');
                     
-                    if (timeLeft <= 0) {
-                        clearInterval(countdown);
-                        // Reset the iframe source to show a fresh form
-                        document.getElementById('formFrame').src = formUrl;
-                        thankYouMessage.style.display = 'none';
-                    }
-                }, 1000);
+                    const countdown = setInterval(() => {
+                        timeLeft--;
+                        timerElement.textContent = timeLeft;
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(countdown);
+                            // Reset the iframe source to show a fresh form
+                            formFrame.src = formUrl;
+                            thankYouMessage.style.display = 'none';
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                // Handle any potential cross-origin issues gracefully
+                console.error('Error accessing iframe URL:', error);
             }
         }
 
-        // Add event listener to detect when iframe loads
-        document.getElementById('formFrame').addEventListener('load', checkFormSubmission);
+        // Add event listener to detect when iframe loads a new page
+        formFrame.addEventListener('load', checkFormSubmission);
     </script>
 </body>
 </html>
+
