@@ -51,8 +51,7 @@
         
         <div class="form-container">
             <!-- Replace YOUR_FORM_URL with your Google Form embed URL -->
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfjg7y5kvFYuFaW6pZCKlihKnv9u75FnuhfC-UR7AJYmu7fDA/viewform?embedded=true" width="640" height="2515" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-
+            <iframe id="formFrame" src="https://docs.google.com/forms/d/e/1FAIpQLSfjg7y5kvFYuFaW6pZCKlihKnv9u75FnuhfC-UR7AJYmu7fDA/viewform?embedded=true" width="640" height="2515" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
     </div>
 
@@ -60,25 +59,25 @@
         const formFrame = document.getElementById('formFrame');
         const formUrl = formFrame.src;
         const thankYouMessage = document.getElementById('thankYouMessage');
-        
-        // Function to check if the form was submitted based on URL change
+
+        // Poll the iframe content every 1 second to check for form submission
         function checkFormSubmission() {
             try {
-                const iframeLocation = formFrame.contentWindow.location.href;
-                
-                // Check if the URL contains 'formResponse', indicating form submission
-                if (iframeLocation.includes('formResponse')) {
+                const iframeDocument = formFrame.contentDocument || formFrame.contentWindow.document;
+                const formSubmitted = iframeDocument.body.innerText.includes('Your response has been recorded');
+
+                if (formSubmitted) {
                     // Show the thank you message
                     thankYouMessage.style.display = 'block';
 
                     // Start countdown
                     let timeLeft = 5;
                     const timerElement = document.getElementById('timer');
-                    
+
                     const countdown = setInterval(() => {
                         timeLeft--;
                         timerElement.textContent = timeLeft;
-                        
+
                         if (timeLeft <= 0) {
                             clearInterval(countdown);
                             // Reset the iframe source to show a fresh form
@@ -88,14 +87,12 @@
                     }, 1000);
                 }
             } catch (error) {
-                // Handle any potential cross-origin issues gracefully
-                console.error('Error accessing iframe URL:', error);
+                console.error('Error accessing iframe document:', error);
             }
         }
 
-        // Add event listener to detect when iframe loads a new page
-        formFrame.addEventListener('load', checkFormSubmission);
+        // Periodically check the iframe content to detect submission
+        setInterval(checkFormSubmission, 1000);
     </script>
 </body>
 </html>
-
