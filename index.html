@@ -3,33 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Form with Timed Redirect</title>
+    <title>Google Form with Timeout Redirect</title>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const iframe = document.getElementById("googleFormIframe");
             const formStartURL = iframe.src;
 
-            // Use a mutation observer to monitor the iframe for changes in the form's state
-            const observer = new MutationObserver(function () {
-                try {
-                    // Check if the iframe content contains the text "Your response has been recorded"
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    const bodyText = iframeDoc.body.textContent || iframeDoc.body.innerText;
-
-                    if (bodyText.includes("Your response has been recorded")) {
-                        console.log("Form submission detected, redirecting back in 5 seconds...");
-                        setTimeout(function () {
-                            iframe.src = formStartURL; // Redirect back to the form after 5 seconds
-                        }, 5000); // 5 seconds delay
-                    }
-                } catch (error) {
-                    console.error("Error accessing iframe content:", error);
-                }
-            });
-
-            // Start observing the iframe for changes
-            const config = { childList: true, subtree: true };
-            observer.observe(iframe, config);
+            // Set a timeout to reset the iframe after a period of time
+            setTimeout(function () {
+                console.log("Resetting form after timeout...");
+                iframe.src = formStartURL; // Reset back to the original form URL
+            }, 30000); // 30 seconds timeout
         });
     </script>
 </head>
